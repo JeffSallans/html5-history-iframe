@@ -1,0 +1,59 @@
+<html><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page 2</title>
+</head>
+<body>
+	<p>
+		This is page 2 and it contains only an iframe:
+		</p><pre>&lt;iframe src="iframe1.html"&gt;&lt;/iframe&gt;</pre>
+		<iframe id="iframe-window" src="iframe1.html" onload="initPage();"></iframe>
+	<p></p>
+	<p>Coming from page 1, the history should contain and entry for it.</p>
+	<p>History Length: <span id='page-history-length'></span></p>
+	<p>History State: <span id='page-history-state'></span></p>
+<script>
+	function initPage() {
+
+		//Add empty state
+		//window.history.pushState("manual", null, null);
+		//document.getElementById('iframe-window').contentWindow.history.pushState("manual", null, null);
+
+		updateData();
+	}
+
+	function updateData() {
+
+		//display history length
+		document.getElementById('page-history-length').innerHTML = window.history.length;
+		document.getElementById('page-history-state').innerHTML = window.history.state;
+	}
+
+	function receiveMessage(event) {
+
+		if (event.data == 'back') {
+			window.history.replaceState("manual", null, null);
+			window.history.back();
+		}
+		else if (event.data) {
+			alert("event: " + event.data + " is not for this example");
+		}
+		updateData();
+	}
+
+	window.onpopstate = function(event) {
+	  
+	  	if (event.state != "manual") {
+	  		window.history.pushState(event);
+	  	}
+	};
+
+	if (window.addEventListener){
+	  addEventListener("message", receiveMessage, false);
+	} else {
+	  attachEvent("onmessage", receiveMessage);
+	}
+
+</script>
+
+</body></html>
